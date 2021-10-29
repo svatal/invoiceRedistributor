@@ -37,7 +37,8 @@ const fileNames = fs
 forEachAsync(fileNames, async (fn) => {
   const parsed = parse(fn);
   const { billingPeriod } = parsed.summary.summaryHead;
-  console.log(billingPeriod.from, "-", billingPeriod.to);
+  const period = `${billingPeriod.from} - ${billingPeriod.to}`;
+  console.log(period);
   const subscribers = parsed.summary.subscribers.subscriber;
 
   const categorized = categorize(subscribers, phoneNumberToGroup);
@@ -55,6 +56,7 @@ forEachAsync(fileNames, async (fn) => {
   resultPages.push((p) =>
     drawSummary(
       p,
+      period,
       presentCustomerNames.map((name) => ({
         vs: customers[name].vs,
         sum: categorized[name]!.sum,
@@ -65,7 +67,9 @@ forEachAsync(fileNames, async (fn) => {
   presentCustomerNames.forEach((groupName) => {
     const def = customers[groupName];
     const prices = categorized[groupName]!;
-    resultPages.push((p) => drawGroupSummary(p, sanitize(groupName), prices));
+    resultPages.push((p) =>
+      drawGroupSummary(p, sanitize(groupName), period, prices)
+    );
     def.numbers.forEach((n) => {
       const pages = pagesInSource[n];
       if (pages) {

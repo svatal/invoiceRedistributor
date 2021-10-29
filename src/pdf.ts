@@ -87,23 +87,17 @@ const x = 50;
 
 export function drawSummary(
   page: PDFPage,
+  period: string,
   s: { vs: number; sum: number; name: string }[]
 ) {
   page.setFontSize(10);
+  page.drawText(period, { x: x, y: top });
+  const staticLines = 2;
   s.forEach((line, idx) => {
-    const y = top - lineSize * idx;
-    page.drawText(line.vs.toString(), {
-      x: x,
-      y,
-    });
-    page.drawText(formatNumber(line.sum), {
-      x: x + 40,
-      y,
-    });
-    page.drawText(line.name, {
-      x: x + 100,
-      y,
-    });
+    const y = top - lineSize * (idx + staticLines);
+    page.drawText(line.vs.toString(), { x: x, y });
+    page.drawText(formatNumber(line.sum), { x: x + 40, y });
+    page.drawText(line.name, { x: x + 100, y });
     page.drawLine({
       start: { x, y: y - 2 },
       end: { x: x + 150, y: y - 2 },
@@ -120,6 +114,7 @@ function formatNumber(price: number) {
 export function drawGroupSummary(
   page: PDFPage,
   name: string,
+  period: string,
   s: {
     sum: number;
     numbers: {
@@ -128,26 +123,20 @@ export function drawGroupSummary(
   }
 ) {
   page.setFontSize(10);
-  page.drawText(`${name}`, { x, y: top });
+  page.drawText(period, { x, y: top });
+  page.drawText(name, { x, y: top - lineSize * 2 });
+  const staticLines = 3;
   Object.keys(s.numbers).forEach((n, idx) => {
     const price = s.numbers[n]!;
-    page.drawText(n, {
-      x,
-      y: top - lineSize * (idx + 1),
-    });
-    page.drawText(formatNumber(price), {
-      x: x + 60,
-      y: top - lineSize * (idx + 1),
-    });
+    const y = top - lineSize * (idx + staticLines);
+    page.drawText(n, { x, y });
+    page.drawText(formatNumber(price), { x: x + 60, y });
   });
-  const y = top - lineSize * (Object.keys(s.numbers).length + 1);
+  const y = top - lineSize * (Object.keys(s.numbers).length + staticLines);
   page.drawLine({
     start: { x: x + 60, y: y + 10 },
     end: { x: x + 110, y: y + 10 },
     thickness: 0.5,
   });
-  page.drawText(formatNumber(s.sum), {
-    x: x + 60,
-    y,
-  });
+  page.drawText(formatNumber(s.sum), { x: x + 60, y });
 }
