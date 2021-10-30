@@ -3,12 +3,12 @@ export function keys<T>(obj: T): (keyof T)[] {
 }
 
 export function sanitize(s: string) {
-  // used pdf fonts does not support these characters
-  return s
-    .replace("č", "c")
-    .replace("ř", "r")
-    .replace("Ř", "R")
-    .replace("ň", "n");
+  return s;
+  // standard pdf fonts does not support these characters, custom font does
+  // .replace("č", "c")
+  // .replace("ř", "r")
+  // .replace("Ř", "R")
+  // .replace("ň", "n");
 }
 
 export async function forEachAsync<TIn, TOut>(

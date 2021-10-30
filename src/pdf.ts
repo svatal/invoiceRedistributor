@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { PDFDocument, PDFFont, PDFPage, StandardFonts } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.js";
 import { forEachAsync } from "./utils";
 
@@ -65,7 +66,10 @@ export async function reorderPages(
   const bytes = fs.readFileSync(fileName);
   const origDoc = await PDFDocument.load(bytes);
   const targetDoc = await PDFDocument.create();
-  const font = targetDoc.embedStandardFont(StandardFonts.Courier);
+  targetDoc.registerFontkit(fontkit);
+  // monospaced font should be used - otherwise the left-padding displaying of numbers should be changed to
+  // actually measure the expected results and hope for the best
+  const font = await targetDoc.embedFont(fs.readFileSync("./font/luximr.ttf"));
 
   await forEachAsync(pages, async (p) => {
     if (typeof p == "number") {
