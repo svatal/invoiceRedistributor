@@ -92,6 +92,7 @@ const x = 50;
 export function drawSummary(
   page: PDFPage,
   period: string,
+  sum: number,
   s: { vs: number; sum: number; name: string }[]
 ) {
   page.setFontSize(10);
@@ -107,6 +108,10 @@ export function drawSummary(
       end: { x: x + 150, y: y - 2 },
       thickness: 0.5,
     });
+  });
+  page.drawText(formatNumber(sum), {
+    x: x + 40,
+    y: top - lineSize * (s.length + staticLines),
   });
 }
 

@@ -57,6 +57,9 @@ forEachAsync(fileNames, async (fn) => {
     drawSummary(
       p,
       period,
+      presentCustomerNames
+        .map((name) => categorized[name]!.sum)
+        .reduce((a, b) => a + b),
       presentCustomerNames.map((name) => ({
         vs: customers[name].vs,
         sum: categorized[name]!.sum,
