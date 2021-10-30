@@ -3,6 +3,7 @@ import { PDFDocument, PDFFont, PDFPage, StandardFonts } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.js";
 import { forEachAsync } from "./utils";
+import { roundingErrorPlaceholder } from "./processor";
 
 interface IPages {
   [number: string]: { first: number; count: number };
@@ -135,12 +136,15 @@ export function drawGroupSummary(
   page.drawText(period, { x, y: top });
   page.drawText(name, { x, y: top - lineSize * 2 });
   const staticLines = 3;
-  Object.keys(s.numbers).forEach((n, idx) => {
-    const price = s.numbers[n]!;
-    const y = top - lineSize * (idx + staticLines);
-    page.drawText(n, { x, y });
-    page.drawText(formatNumber(price), { x: x + 60, y });
-  });
+  moveRoundingErrorPlaceholderToEnd(Object.keys(s.numbers)).forEach(
+    (n, idx) => {
+      const price = s.numbers[n]!;
+      const y = top - lineSize * (idx + staticLines);
+      const label = n !== roundingErrorPlaceholder ? n : "correction";
+      page.drawText(label, { x, y });
+      page.drawText(formatNumber(price), { x: x + 60, y });
+    }
+  );
   const y = top - lineSize * (Object.keys(s.numbers).length + staticLines);
   page.drawLine({
     start: { x: x + 60, y: y + 10 },
@@ -148,4 +152,9 @@ export function drawGroupSummary(
     thickness: 0.5,
   });
   page.drawText(formatNumber(s.sum), { x: x + 60, y });
+}
+
+function moveRoundingErrorPlaceholderToEnd(numbers: string[]) {
+  if (numbers[0] !== roundingErrorPlaceholder) return numbers;
+  return [...numbers.slice(1), roundingErrorPlaceholder];
 }

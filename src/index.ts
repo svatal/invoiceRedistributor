@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { PDFFont, PDFPage } from "pdf-lib";
 import customers from "../data/customers.json";
 import { drawGroupSummary, drawSummary, getPages, reorderPages } from "./pdf";
-import { categorize } from "./processor";
+import { categorize, roundingErrorPlaceholder } from "./processor";
 import { forEachAsync, keys, sanitize } from "./utils";
 import { parse } from "./xml";
 
@@ -77,7 +77,8 @@ forEachAsync(fileNames, async (fn) => {
       const pages = pagesInSource[n];
       if (pages) {
         for (let i = 0; i < pages.count; i++) resultPages.push(pages.first + i);
-      } else console.log(`Number ${n} not found in the documents!`);
+      } else if (n !== +roundingErrorPlaceholder)
+        console.log(`Number ${n} not found in the documents!`);
     });
   });
   reorderPages(

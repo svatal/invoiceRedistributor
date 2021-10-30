@@ -20,6 +20,15 @@ export interface ISubscriber {
   phoneNumber: string;
   summaryPrice: string;
   summaryPriceWithTax: string;
+  serviceTax: {
+    serviceTaxGroup: IServiceTaxGroup | IServiceTaxGroup[];
+  };
+}
+
+export interface IServiceTaxGroup {
+  tax: string;
+  priceWithoutTax: string;
+  priceTax: string;
 }
 
 export function parse(fileName: string) {
