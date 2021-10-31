@@ -52,6 +52,11 @@ forEachAsync(fileNames, async (fn) => {
   const presentCustomerNames = keys(customers).filter(
     (name) => categorized[name]
   );
+  keys(customers)
+    .filter((name) => !categorized[name])
+    .forEach((n) =>
+      console.log(`No phone number for group "${n}" appeared at all!"`)
+    );
   let resultPages: (number | ((p: PDFPage, f: PDFFont) => void))[] = [];
   resultPages.push((p) =>
     drawSummary(
@@ -78,7 +83,9 @@ forEachAsync(fileNames, async (fn) => {
       if (pages) {
         for (let i = 0; i < pages.count; i++) resultPages.push(pages.first + i);
       } else if (n !== +roundingErrorPlaceholder)
-        console.log(`Number ${n} not found in the documents!`);
+        console.log(
+          `Number ${n} from the group "${phoneNumberToGroup[n]}" not found in the documents!`
+        );
     });
   });
   reorderPages(
