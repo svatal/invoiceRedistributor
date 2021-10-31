@@ -96,7 +96,7 @@ export async function reorderPages(
   fs.writeFileSync(targetFileName, outBytes);
 }
 
-const lineSize = 12;
+const lineSize = 14;
 const top = 800;
 const x = 50;
 
