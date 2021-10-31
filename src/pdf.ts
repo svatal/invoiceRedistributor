@@ -103,7 +103,7 @@ export function drawSummary(
     const y = top - lineSize * (idx + staticLines);
     page.drawText(line.vs.toString(), { x: x, y });
     page.drawText(formatNumber(line.sum), { x: x + 40, y });
-    page.drawText(line.name, { x: x + 100, y });
+    page.drawText(line.name, { x: x + 110, y });
     page.drawLine({
       start: { x, y: y - 2 },
       end: { x: x + 150, y: y - 2 },
@@ -117,8 +117,15 @@ export function drawSummary(
 }
 
 function formatNumber(price: number) {
-  const s = price.toFixed(2);
-  return " ".repeat(8 - s.length) + s;
+  const s = toFixedLocalized(price);
+  return " ".repeat(9 - s.length) + s;
+}
+
+function toFixedLocalized(price: number) {
+  return price.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export function drawGroupSummary(
