@@ -25,3 +25,4 @@ If you have good mobile contract and offer your employees to use it, you may hav
 - put the downloaded files into data folder
 - run the program
 - .. and you will get reordered invoice by groups with summaries
+- if you want the sum of all groups to match the invoice price (there is a rounding error in the invoice breakdown to phone numbers that can add up), just add phone number `0` to one of the groups (or a new one). It will carry the rounding error, so the sum should match.
