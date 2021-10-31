@@ -1,7 +1,15 @@
 import * as fs from "fs";
 import { PDFFont, PDFPage } from "pdf-lib";
 import customers from "../data/customers.json";
-import { drawGroupSummary, drawSummary, getPages, reorderPages } from "./pdf";
+import { printGroupSummary } from "./config";
+import {
+  drawGroupSummary,
+  drawName,
+  drawSummary,
+  getPages,
+  IOutPageDef,
+  reorderPages,
+} from "./pdf";
 import { categorize, roundingErrorPlaceholder } from "./processor";
 import { forEachAsync, keys, sanitize } from "./utils";
 import { parse } from "./xml";
@@ -57,7 +65,7 @@ forEachAsync(fileNames, async (fn) => {
     .forEach((n) =>
       console.log(`No phone number for group "${n}" appeared at all!"`)
     );
-  let resultPages: (number | ((p: PDFPage, f: PDFFont) => void))[] = [];
+  let resultPages: IOutPageDef[] = [];
   resultPages.push((p) =>
     drawSummary(
       p,
@@ -75,13 +83,27 @@ forEachAsync(fileNames, async (fn) => {
   presentCustomerNames.forEach((groupName) => {
     const def = customers[groupName];
     const prices = categorized[groupName]!;
-    resultPages.push((p) =>
-      drawGroupSummary(p, sanitize(groupName), period, prices)
-    );
-    def.numbers.forEach((n) => {
+    if (printGroupSummary)
+      resultPages.push((p) =>
+        drawGroupSummary(p, sanitize(groupName), period, prices)
+      );
+    def.numbers.forEach((n, numberPos) => {
       const pages = pagesInSource[n];
       if (pages) {
-        for (let i = 0; i < pages.count; i++) resultPages.push(pages.first + i);
+        for (let i = 0; i < pages.count; i++)
+          resultPages.push(
+            printGroupSummary
+              ? pages.first + i
+              : [
+                  pages.first + i,
+                  (p) =>
+                    drawName(
+                      p,
+                      sanitize(groupName),
+                      numberPos === 0 && i === 0 ? prices.sum : undefined
+                    ),
+                ]
+          );
       } else if (n !== +roundingErrorPlaceholder)
         console.log(
           `Number ${n} from the group "${phoneNumberToGroup[n]}" not found in the documents!`

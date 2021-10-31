@@ -59,10 +59,15 @@ function addSpacing(input: string) {
   return input.replace(/^(.{3})(.{3})(.{3})$/, "$1 $2 $3");
 }
 
+export type IOutPageDef =
+  | number
+  | ((p: PDFPage, f: PDFFont) => void)
+  | [number, (p: PDFPage, f: PDFFont) => void];
+
 export async function reorderPages(
   fileName: string,
   targetFileName: string,
-  pages: (number | ((p: PDFPage, f: PDFFont) => void))[]
+  pages: IOutPageDef[]
 ) {
   const bytes = fs.readFileSync(fileName);
   const origDoc = await PDFDocument.load(bytes);
@@ -75,6 +80,11 @@ export async function reorderPages(
   await forEachAsync(pages, async (p) => {
     if (typeof p == "number") {
       const [page] = await targetDoc.copyPages(origDoc, [p]);
+      targetDoc.addPage(page);
+    } else if (Array.isArray(p)) {
+      const [page] = await targetDoc.copyPages(origDoc, [p[0]]);
+      page!.setFont(font);
+      p[1](page!, font);
       targetDoc.addPage(page);
     } else {
       const page = targetDoc.addPage();
@@ -164,4 +174,16 @@ export function drawGroupSummary(
 function moveRoundingErrorPlaceholderToEnd(numbers: string[]) {
   if (numbers[0] !== roundingErrorPlaceholder) return numbers;
   return [...numbers.slice(1), roundingErrorPlaceholder];
+}
+
+export function drawName(page: PDFPage, name: string, totalPrice?: number) {
+  page.setFontSize(10);
+  page.drawText(name, { x: 10, y: 10 });
+  if (totalPrice !== undefined) {
+    page.drawText(`celkem: ${toFixedLocalized(totalPrice)}`, {
+      x: 100,
+      y: 10,
+      size: 20,
+    });
+  }
 }
