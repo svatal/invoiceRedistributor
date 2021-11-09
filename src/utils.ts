@@ -19,3 +19,7 @@ export async function forEachAsync<TIn, TOut>(
     await callback(input[i]!);
   }
 }
+
+export function isDefined<T>(o: T | undefined): o is T {
+  return o !== undefined;
+}

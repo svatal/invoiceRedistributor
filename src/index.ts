@@ -11,7 +11,7 @@ import {
   reorderPages,
 } from "./pdf";
 import { categorize, roundingErrorPlaceholder } from "./processor";
-import { forEachAsync, keys, sanitize } from "./utils";
+import { forEachAsync, isDefined, keys, sanitize } from "./utils";
 import { parse } from "./xml";
 
 // customers.json is in form:
@@ -87,9 +87,17 @@ forEachAsync(fileNames, async (fn) => {
       resultPages.push((p) =>
         drawGroupSummary(p, sanitize(groupName), period, prices)
       );
-    def.numbers.forEach((n, numberPos) => {
-      const pages = pagesInSource[n];
-      if (pages) {
+    def.numbers
+      .map((n) => {
+        const pages = pagesInSource[n];
+        if (!pages && n !== +roundingErrorPlaceholder)
+          console.log(
+            `Number ${n} from the group "${phoneNumberToGroup[n]}" not found in the documents!`
+          );
+        return pages;
+      })
+      .filter(isDefined)
+      .forEach((pages, numberPos) => {
         for (let i = 0; i < pages.count; i++)
           resultPages.push(
             printGroupSummary
@@ -104,11 +112,7 @@ forEachAsync(fileNames, async (fn) => {
                     ),
                 ]
           );
-      } else if (n !== +roundingErrorPlaceholder)
-        console.log(
-          `Number ${n} from the group "${phoneNumberToGroup[n]}" not found in the documents!`
-        );
-    });
+      });
   });
   reorderPages(
     pdfFN,
