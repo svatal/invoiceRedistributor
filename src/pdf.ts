@@ -178,11 +178,11 @@ function moveRoundingErrorPlaceholderToEnd(numbers: string[]) {
 
 export function drawName(page: PDFPage, name: string, totalPrice?: number) {
   page.setFontSize(10);
-  page.drawText(name, { x: 10, y: 10 });
+  page.drawText(name, { x: 20, y: 20 });
   if (totalPrice !== undefined) {
     page.drawText(`celkem: ${toFixedLocalized(totalPrice)}`, {
-      x: 100,
-      y: 10,
+      x: 250,
+      y: 20,
       size: 20,
     });
   }
