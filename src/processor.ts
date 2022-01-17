@@ -1,6 +1,7 @@
 import { IServiceTaxGroup, ISubscriber } from "./xml";
 
 export const roundingErrorPlaceholder = "0";
+export const unknownGroupName = "_Unknown_";
 
 export function categorize(
   subscribers: ISubscriber[],
@@ -29,7 +30,7 @@ function add(
   phoneNumber: string,
   price: number
 ) {
-  const groupName = phoneNumberToGroup[phoneNumber] ?? "_Unknown_";
+  const groupName = phoneNumberToGroup[phoneNumber] ?? unknownGroupName;
   const entry = obj[groupName] ?? { sum: 0, numbers: {} };
   entry.numbers[phoneNumber] = price;
   entry.sum += price;

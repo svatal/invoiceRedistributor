@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { PDFFont, PDFPage } from "pdf-lib";
 import customers from "../data/customers.json";
 import { printGroupSummary } from "./config";
 import {
@@ -10,7 +9,11 @@ import {
   IOutPageDef,
   reorderPages,
 } from "./pdf";
-import { categorize, roundingErrorPlaceholder } from "./processor";
+import {
+  categorize,
+  roundingErrorPlaceholder,
+  unknownGroupName,
+} from "./processor";
 import { forEachAsync, isDefined, keys, sanitize } from "./utils";
 import { parse } from "./xml";
 
@@ -65,6 +68,12 @@ forEachAsync(fileNames, async (fn) => {
     .forEach((n) =>
       console.log(`No phone number for group "${n}" appeared at all!"`)
     );
+  if (categorized[unknownGroupName]) {
+    keys(categorized[unknownGroupName]!.numbers).forEach((phoneNumber) =>
+      console.error(`Unknown phone number "${phoneNumber}"`)
+    );
+  }
+
   let resultPages: IOutPageDef[] = [];
   resultPages.push((p) =>
     drawSummary(
