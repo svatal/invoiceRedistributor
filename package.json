@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/index.ts",
-    "watch": "nodemon ./src/index.ts"
+    "watch": "nodemon ./src/index.ts",
+    "validate": "ts-node ./src/index-validate.ts"
   },
   "author": "",
   "license": "ISC",

@@ -1,3 +1,4 @@
+import { toArray } from "./utils";
 import { IServiceTaxGroup, ISubscriber } from "./xml";
 
 export const roundingErrorPlaceholder = "0";
@@ -38,7 +39,7 @@ function add(
 }
 
 function getRoundingError(stg: IServiceTaxGroup | IServiceTaxGroup[]) {
-  return (Array.isArray(stg) ? stg : [stg])
+  return toArray(stg)
     .map((g) => +g.priceTax - (+g.priceWithoutTax * +g.tax) / 100)
     .reduce((a, b) => a + b, 0);
 }

@@ -1,4 +1,4 @@
-export function keys<T>(obj: T): (keyof T)[] {
+export function keys<T extends Object>(obj: T): (keyof T)[] {
   return Object.keys(obj) as (keyof T)[];
 }
 
@@ -22,4 +22,8 @@ export async function forEachAsync<TIn, TOut>(
 
 export function isDefined<T>(o: T | undefined): o is T {
   return o !== undefined;
+}
+
+export function toArray<T>(input: T | T[] | undefined): T[] {
+  return input === undefined ? [] : Array.isArray(input) ? input : [input];
 }
