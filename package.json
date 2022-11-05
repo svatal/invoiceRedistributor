@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node ./src/index.ts",
     "watch": "nodemon ./src/index.ts",
-    "validate": "ts-node ./src/index-validate.ts"
+    "validate-xml-structure": "ts-node ./src/index-validate-xml-structure.ts",
+    "analyze": "ts-node ./src/index-analyze.ts"
   },
   "author": "",
   "license": "ISC",

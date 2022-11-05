@@ -19,9 +19,9 @@ export async function getPages(
     const doc = await pdfjs.getDocument(fileName).promise;
     for (let pageNo = 1; pageNo <= doc.numPages; pageNo += 1) {
       const page = await doc.getPage(pageNo);
-      const lookingForIdx: number =
+      const lookingForIdx =
         Object.keys(results).length + (prev === undefined ? 0 : 1);
-      const searchText = numbers[lookingForIdx]!;
+      const searchText: string = numbers[lookingForIdx]!;
       const altSearchText = addSpacing(searchText);
       const tokenizedText = await page.getTextContent();
       const found = tokenizedText.items.some(

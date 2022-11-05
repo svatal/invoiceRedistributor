@@ -6,9 +6,9 @@ const dir = "./data";
 const fileNames = fs
   .readdirSync(dir)
   .filter((f) => /.*-s\.xml/.test(f))
-  //   .filter((_, i, a) => i === a.length - 1) // last one is enough - for now
   .map((f) => `${dir}/${f}`);
 
+// validates we know about all price components
 for (const fn of fileNames) {
   console.log(fn);
   const parsed = parse(fn);

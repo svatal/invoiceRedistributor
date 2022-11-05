@@ -27,3 +27,11 @@ export function isDefined<T>(o: T | undefined): o is T {
 export function toArray<T>(input: T | T[] | undefined): T[] {
   return input === undefined ? [] : Array.isArray(input) ? input : [input];
 }
+
+export function hasProp<
+  T1Key extends string,
+  T1 extends Record<T1Key, unknown>,
+  T2
+>(item: T1 | T2, key: T1Key): item is T1 {
+  return key in item;
+}
